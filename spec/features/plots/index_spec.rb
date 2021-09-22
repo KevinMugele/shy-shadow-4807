@@ -27,7 +27,7 @@ RSpec.describe 'Plots Index Page' do
 
   describe 'user story 1' do
     it 'shows all plot information and plots plants on plot index page' do
-      visit '/plots'
+      visit plots_path
       # save_and_open_page
       within("#plot-#{@plot1.id}") do
         expect(page).to have_content(@plot1.number)
@@ -58,6 +58,34 @@ RSpec.describe 'Plots Index Page' do
         expect(page).to have_content(@plot6.number)
         expect(page).to have_content(@plant6.name)
       end
+    end
+  end
+
+  describe 'user story 2' do
+    it 'removes a plant from a plot' do
+      visit plots_path
+
+      within("#plot-#{@plot1.id}") do
+        within("#plotplant-#{@plot1.id}-#{@plant1.id}") do
+          expect(page).to have_content(@plant1.name)
+          expect(page).to have_link("Remove Plant from Plot")
+          click_link "Remove Plant from Plot"
+        end
+      end
+
+      expect(current_path).to eq(plots_path)
+      expect(page).to_not have_content(@plant1.name)
+
+      within("#plot-#{@plot2.id}") do
+        within("#plotplant-#{@plot2.id}-#{@plant2.id}") do
+          expect(page).to have_content(@plant2.name)
+          expect(page).to have_link("Remove Plant from Plot")
+          click_link "Remove Plant from Plot"
+        end
+      end
+
+      expect(current_path).to eq(plots_path)
+      expect(page).to_not have_content(@plant2.name)
     end
   end
 end
